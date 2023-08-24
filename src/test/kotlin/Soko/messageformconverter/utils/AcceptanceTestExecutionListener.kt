@@ -1,13 +1,16 @@
 package Soko.messageformconverter.utils
 
+import io.restassured.RestAssured
 import org.springframework.beans.factory.getBean
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.TestContext
 import org.springframework.test.context.support.AbstractTestExecutionListener
 
 class AcceptanceTestExecutionListener : AbstractTestExecutionListener() {
-
-    override fun afterTestMethod(testContext: TestContext) {
+    override fun beforeTestMethod(testContext: TestContext) {
+        val environment = testContext.applicationContext.environment
+        val serverPort = environment.getProperty("local.server.port", Int::class.java)
+        RestAssured.port = serverPort ?: 0
         val jdbcTemplate = getJdbcTemplate(testContext);
         val truncateQueries = getTruncateQueries(jdbcTemplate);
         truncateTables(jdbcTemplate, truncateQueries);
