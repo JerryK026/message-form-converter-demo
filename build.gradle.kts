@@ -6,6 +6,13 @@ plugins {
 	id("org.asciidoctor.jvm.convert") version "3.3.2"
 	kotlin("jvm") version "1.8.22"
 	kotlin("plugin.spring") version "1.8.22"
+	kotlin("plugin.allopen") version "1.8.22"
+}
+
+allOpen {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.Embeddable")
+	annotation("jakarta.persistence.MappedSuperclass")
 }
 
 group = "Soko"
@@ -23,15 +30,20 @@ val snippetsDir by extra { file("build/generated-snippets") }
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-	implementation("org.springframework.data:spring-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	runtimeOnly("com.mysql:mysql-connector-j")
+	runtimeOnly("com.h2database:h2")
 
-	implementation("io.rest-assured:rest-assured:5.3.1")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+	testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
+	testImplementation("io.kotest:kotest-assertions-core:5.6.2")
+	testImplementation("io.rest-assured:rest-assured:5.3.1")
+	testImplementation("io.rest-assured:kotlin-extensions:5.3.1")
 }
 
 tasks.withType<KotlinCompile> {
